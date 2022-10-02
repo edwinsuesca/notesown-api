@@ -5,7 +5,7 @@ class Config:
     SECRET_KEY = config('SECRET_KEY')
 
 class DevelopmentConfig(Config):
-    DEBUG = False
+    DEBUG = True
 config = {
     'development': DevelopmentConfig
 }

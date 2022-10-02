@@ -10,7 +10,7 @@ class UsuariosModel():
             usuarios=[]
 
             with connection.cursor() as cursor:
-                cursor.execute("SELECT id_usuario, nombres_usuario, apellidos_usuario, correo_usuario, clave_usuario, imagen_usuario FROM usuarios ")
+                cursor.execute("SELECT nombres_usuario, apellidos_usuario, correo_usuario, clave_usuario, imagen_usuario, id_usuario FROM usuarios ")
                 resultset=cursor.fetchall()
 
                 for row in resultset:
