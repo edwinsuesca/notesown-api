@@ -76,7 +76,7 @@ def delete_carpeta(id):
         affected_rows = CarpetasModel.delete_carpeta(id)
 
         if affected_rows == 1:
-            return jsonify(carpeta.id)
+            return jsonify( f'Carpeta con ID {id} borrada satisfactoriamente.')
         else:
             return jsonify({'message': "No folder delete"}), 404
         

@@ -10,7 +10,7 @@ class CarpetasModel():
             carpetas=[]
 
             with connection.cursor() as cursor:
-                cursor.execute("SELECT id_carpeta, nombre_carpeta, fecha_creacion_carpeta, fecha_edicion_carpeta, panel_carpeta FROM carpetas ORDER BY id_carpeta")
+                cursor.execute("SELECT nombre_carpeta, fecha_creacion_carpeta, fecha_edicion_carpeta, panel_carpeta, id_carpeta FROM carpetas ORDER BY id_carpeta")
                 resultset=cursor.fetchall()
 
                 for row in resultset:
@@ -29,7 +29,7 @@ class CarpetasModel():
             connection = get_connection()
 
             with connection.cursor() as cursor:
-                cursor.execute("SELECT id_carpeta, nombre_carpeta, fecha_creacion_carpeta, fecha_edicion_carpeta, panel_carpeta FROM carpetas WHERE id_carpeta = %s",(id))
+                cursor.execute("SELECT nombre_carpeta, fecha_creacion_carpeta, fecha_edicion_carpeta, panel_carpeta, id_carpeta FROM carpetas WHERE id_carpeta = %s",(id))
                 row = cursor.fetchone()
 
                 carpeta = None
