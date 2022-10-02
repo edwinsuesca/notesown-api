@@ -1,70 +1,73 @@
 from database.db import get_connection
-from .entities.entiUsuarios import Usuarios
+from .entities.entiCarpetas import Carpetas
 
-class UsuariosModel():
+class CarpetasModel():
     #Buscar todos
     @classmethod
-    def get_usuarios(self):
+    def get_carpetas(self):
         try:
             connection=get_connection()
-            usuarios=[]
+            carpetas=[]
 
             with connection.cursor() as cursor:
-                cursor.execute("SELECT id_usuario, nombres_usuario, apellidos_usuario, correo_usuario, clave_usuario, imagen_usuario FROM usuarios ")
+                cursor.execute("SELECT id_carpeta, nombre_carpeta, fecha_creacion_carpeta, fecha_edicion_carpeta, panel_carpeta FROM carpetas ORDER BY id_carpeta")
                 resultset=cursor.fetchall()
 
                 for row in resultset:
-                    usuario = Usuarios(row[0],row[1],row[2],row[3],row[4],row[5])
-                    usuarios.append(usuario.to_JSON())
+                    carpeta  = Carpetas(row[0],row[1],row[2],row[3],row[4])
+                    carpetas.append(carpeta.to_JSON())
 
             connection.close()
-            return usuarios
+            return carpetas
         except Exception as ex:
             raise Exception(ex)
+
     #Buscar uno
     @classmethod
-    def get_usuario(self,id):
+    def get_carpeta(self,id):
         try:
             connection = get_connection()
 
             with connection.cursor() as cursor:
-                cursor.execute("SELECT id_usuario, nombres_usuario, apellidos_usuario, correo_usuario, clave_usuario, imagen_usuario FROM usuarios WHERE id_usuario = %s",(id,))
+                cursor.execute("SELECT id_carpeta, nombre_carpeta, fecha_creacion_carpeta, fecha_edicion_carpeta, panel_carpeta FROM carpetas WHERE id_carpeta = %s",(id))
                 row = cursor.fetchone()
 
-                usuario = None
+                carpeta = None
                 if row != None:
-                        usuario = Usuarios(row[0],row[1],row[2],row[3],row[4], row[5])
-                        usuario = usuario.to_JSON()
+                        carpeta = Carpetas(row[0],row[1],row[2],row[3],row[4])
+                        carpeta = carpeta.to_JSON()
                     
             connection.close()
-            return usuario
+            return carpeta
         except Exception as ex:
             raise Exception(ex)
+
     # Añadir 
     @classmethod
-    def add_usuario(self,usuario):
+    def add_carpeta(self, carpeta):
         try:
             connection = get_connection()
-
+            print("Insertadas: " + carpeta.name)
+            print(carpeta.panel)
             with connection.cursor() as cursor:
-                cursor.execute("""INSERT INTO usuarios (nombres_usuario, apellidos_usuario, correo_usuario, clave_usuario, imagen_usuario) VALUES (%s, %s, %s, %s, %s )""",(usuario.name, usuario.lastname, usuario.email, usuario.passw, usuario.img))
+                cursor.execute("INSERT INTO carpetas (nombre_carpeta, panel_carpeta) VALUES (%s, %s)", (carpeta.name, 0))
                 
                 affected_rows  = cursor.rowcount
                 connection.commit()
                 
-                    
             connection.close()
             return affected_rows
         except Exception as ex:
             raise Exception(ex)
-    # Actualizar
+   
+ # Actualizar
     @classmethod
-    def update_usuario(self,usuario):
+    def update_carpeta(self,carpeta):
         try:
             connection = get_connection()
 
             with connection.cursor() as cursor:
-                cursor.execute("""UPDATE usuarios SET nombres_usuario = %s, apellidos_usuario = %s, correo_usuario = %s, clave_usuario = %s, imagen_usuario = %s WHERE id_usuario = %s""",(usuario.name, usuario.lastname, usuario.email, usuario.passw, usuario.img, usuario.id))
+                cursor.execute("UPDATE carpetas SET nombre_carpeta = %s, fecha_creacion_carpeta = %s, fecha_edicion_carpeta = %s, panel_carpeta = %s WHERE id_carpeta = %s",(carpeta.name, carpeta.creationDate, carpeta.updateDate, carpeta.panel, carpeta.id))
                 
                 affected_rows  = cursor.rowcount
                 connection.commit()
@@ -76,12 +79,12 @@ class UsuariosModel():
 
     #Eliminar
     @classmethod
-    def delete_usuario(self, id):
+    def delete_carpeta(self, id):
         try:
             connection = get_connection()
 
             with connection.cursor() as cursor:
-                cursor.execute("DELETE FROM usuarios WHERE id_usuario = %s", (id))
+                cursor.execute("DELETE FROM carpetas WHERE id_carpeta = %s", (id))
                 
                 affected_rows  = cursor.rowcount
                 connection.commit()
