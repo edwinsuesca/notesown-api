@@ -1,11 +1,28 @@
 from flask import Blueprint, jsonify, request
-
+from flask_cors import cross_origin
+from utils.token import writeToken
 # Entities
 from models.entities.entiUsuarios import Usuarios
 # Models
 from models.UsuariosModel import UsuariosModel
 
 main = Blueprint('usuario_blueprint',  __name__)
+
+#Login
+@cross_origin
+@main.route('/login', methods = ['POST'])
+def login():
+    try:
+        data = request.get_json()
+        response = UsuariosModel.login(data)
+        if response != None:
+            token = writeToken(data=response["id"])
+            #return jsonify({"token": token})
+            return jsonify({"status": "ok", "response": token.decode()}),200
+        else:
+            return jsonify({"status": "fail", "response": "Usuario o contraseña inválidos"}),200
+    except Exception as ex:
+        return jsonify({'message': str(ex)}),500
 
 #Buscar todos
 @main.route('/') 

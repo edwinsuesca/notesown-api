@@ -2,6 +2,28 @@ from database.db import get_connection
 from .entities.entiUsuarios import Usuarios
 
 class UsuariosModel():
+
+    #Login
+    @classmethod
+    def login(self,user):
+        try:
+            connection = get_connection()
+
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT nombres_usuario, apellidos_usuario, correo_usuario, imagen_usuario, id_usuario FROM usuarios WHERE correo_usuario = %s and clave_usuario = %s",(user["email"],user["password"]))
+                row = cursor.fetchone()
+
+                usuario = None
+                if row != None:
+                        usuario = Usuarios(row[0],row[1],row[2],"",row[3],row[4])
+                        usuario = usuario.to_JSON()
+                    
+            connection.close()
+            return usuario
+        except Exception as ex:
+            raise Exception(ex)
+
+
     #Buscar todos
     @classmethod
     def get_usuarios(self):
