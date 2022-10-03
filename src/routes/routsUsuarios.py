@@ -58,14 +58,13 @@ def update_usuario(id):
         lastname = request.json['lastname']
         email = request.json['email']
         passw = request.json['passw']
-        img = request.json['img']
         
-        usuario = Usuarios(id,name,lastname,email,passw,img)
+        usuario = [name, lastname, email, passw, id]
 
         affected_rows = UsuariosModel.update_usuario(usuario)
 
         if affected_rows == 1:
-            return jsonify(usuario.id)
+            return jsonify(id)
         else:
             return jsonify({'message': "No user updated"}), 500
         

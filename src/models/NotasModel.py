@@ -10,7 +10,7 @@ class NotasModel():
             notas=[]
 
             with connection.cursor() as cursor:
-                cursor.execute("SELECT id_nota, nombre_nota, fecha_creacion_nota, fecha_edicion_nota, descripcion_nota, ultimo_editor_nota, fk_id_carpeta, panel_nota FROM notas ORDER BY id_nota")
+                cursor.execute("SELECT  nombre_nota, fk_id_carpeta, id_nota, fecha_creacion_nota, fecha_edicion_nota, descripcion_nota, ultimo_editor_nota,  panel_nota FROM notas ORDER BY id_nota")
                 resultset=cursor.fetchall()
 
                 for row in resultset:
@@ -29,7 +29,7 @@ class NotasModel():
             connection = get_connection()
 
             with connection.cursor() as cursor:
-                cursor.execute("SELECT id_nota, nombre_nota, fecha_creacion_nota, fecha_edicion_nota, descripcion_nota, ultimo_editor_nota, fk_id_carpeta, panel_nota FROM notas WHERE id_nota = %s",(id))
+                cursor.execute("SELECT nombre_nota, fk_id_carpeta, id_nota, fecha_creacion_nota, fecha_edicion_nota, descripcion_nota, ultimo_editor_nota,  panel_nota FROM notas WHERE id_nota = %s",(id))
                 row = cursor.fetchone()
 
                 nota = None
@@ -49,7 +49,7 @@ class NotasModel():
             connection = get_connection()
     
             with connection.cursor() as cursor:
-                cursor.execute("""INSERT INTO notas (nombre_nota, descripcion_nota,fk_id_carpeta) VALUES (%s, %s,%s)""", (nota.name, nota.description,nota.parentFolder))
+                cursor.execute("""INSERT INTO notas (nombre_nota, fk_id_carpeta, descripcion_nota ) VALUES (%s, %s,%s)""", (nota.name,nota.parentFolder, nota.description))
                 
                 affected_rows  = cursor.rowcount
                 connection.commit()
@@ -66,7 +66,7 @@ class NotasModel():
             connection = get_connection()
 
             with connection.cursor() as cursor:
-                cursor.execute("UPDATE notas SET nombre_nota = %s, fecha_creacion_nota = %s, fecha_edicion_nota = %s, descripcion_nota = %s, ultimo_editor_nota = %s , fk_id_carpeta = %s, panel_nota = %s WHERE id_nota = %s",(nota.name, nota.creationDate, nota.updateDate,  nota.description,  nota.lastEditor,  nota.parentFolder, nota.panel, nota.id))
+                cursor.execute("UPDATE notas SET nombre_nota = %s, fk_id_carpeta = %s, fecha_creacion_nota = %s, fecha_edicion_nota = %s, descripcion_nota = %s, ultimo_editor_nota = %s ,  panel_nota = %s WHERE id_nota = %s",(nota.name, nota.parentFolder, nota.creationDate, nota.updateDate,  nota.description,  nota.lastEditor,   nota.panel, nota.id))
                 
                 affected_rows  = cursor.rowcount
                 connection.commit()

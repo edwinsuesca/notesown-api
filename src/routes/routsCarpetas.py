@@ -49,18 +49,15 @@ def add_carpeta():
 @main.route('/update/<id>', methods = ['PUT'])
 def update_carpeta(id):
     try:
-        id = request.json['id']
         name = request.json['name']
-        creationDate = request.json['creationDate']
-        updateDate = request.json['updateDate']
         panel = request.json['panel']
         
-        carpeta = Carpetas(id,name,creationDate,updateDate,panel)
-
+        carpeta = [name, panel, id]
+        print(carpeta)
         affected_rows = CarpetasModel.update_carpeta(carpeta)
 
         if affected_rows == 1:
-            return jsonify(carpeta.id)
+            return jsonify(id)
         else:
             return jsonify({'message': "No folder updated"}), 500
         
@@ -71,8 +68,6 @@ def update_carpeta(id):
 @main.route('/delete/<id>', methods = ['DELETE'])
 def delete_carpeta(id):
     try:
-        carpeta = Carpetas(id)
-
         affected_rows = CarpetasModel.delete_carpeta(id)
 
         if affected_rows == 1:

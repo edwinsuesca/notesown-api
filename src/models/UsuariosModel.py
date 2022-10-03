@@ -64,7 +64,7 @@ class UsuariosModel():
             connection = get_connection()
 
             with connection.cursor() as cursor:
-                cursor.execute("""UPDATE usuarios SET nombres_usuario = %s, apellidos_usuario = %s, correo_usuario = %s, clave_usuario = %s, imagen_usuario = %s WHERE id_usuario = %s""",(usuario.name, usuario.lastname, usuario.email, usuario.passw, usuario.img, usuario.id))
+                cursor.execute("""UPDATE usuarios SET nombres_usuario = %s, apellidos_usuario = %s, correo_usuario = %s, clave_usuario = %s WHERE id_usuario = %s""",(usuario[0], usuario[1], usuario[2], usuario[3], usuario[4]))
                 
                 affected_rows  = cursor.rowcount
                 connection.commit()
@@ -81,7 +81,7 @@ class UsuariosModel():
             connection = get_connection()
 
             with connection.cursor() as cursor:
-                cursor.execute("DELETE FROM usuarios WHERE id_usuario = %s", (id))
+                cursor.execute("DELETE FROM usuarios WHERE id_usuario = %s", [id])
                 
                 affected_rows  = cursor.rowcount
                 connection.commit()

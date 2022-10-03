@@ -1,5 +1,6 @@
 from database.db import get_connection
 from .entities.entiCarpetas import Carpetas
+from datetime import date
 
 class CarpetasModel():
     #Buscar todos
@@ -62,12 +63,12 @@ class CarpetasModel():
    
  # Actualizar
     @classmethod
-    def update_carpeta(self,carpeta):
+    def update_carpeta(self, carpeta):
         try:
             connection = get_connection()
 
             with connection.cursor() as cursor:
-                cursor.execute("UPDATE carpetas SET nombre_carpeta = %s, fecha_creacion_carpeta = %s, fecha_edicion_carpeta = %s, panel_carpeta = %s WHERE id_carpeta = %s",(carpeta.name, carpeta.creationDate, carpeta.updateDate, carpeta.panel, carpeta.id))
+                cursor.execute("UPDATE carpetas SET nombre_carpeta = %s, fecha_edicion_carpeta = %s, panel_carpeta = %s WHERE id_carpeta = %s",(carpeta[0], date.today() , carpeta[1], carpeta[2]))
                 
                 affected_rows  = cursor.rowcount
                 connection.commit()
@@ -82,9 +83,9 @@ class CarpetasModel():
     def delete_carpeta(self, id):
         try:
             connection = get_connection()
-
+            print(id)
             with connection.cursor() as cursor:
-                cursor.execute("DELETE FROM carpetas WHERE id_carpeta = %s", (id))
+                cursor.execute("DELETE FROM carpetas WHERE id_carpeta = %s", [id])
                 
                 affected_rows  = cursor.rowcount
                 connection.commit()

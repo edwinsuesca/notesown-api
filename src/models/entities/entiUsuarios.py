@@ -1,6 +1,6 @@
 class Usuarios():
 
-    def __init__(self,nombres_usuario, apellidos_usuario,correo_usuario,clave_usuario,imagen_usuario, id_usuario=None):
+    def __init__(self,nombres_usuario=None, apellidos_usuario=None,correo_usuario=None,clave_usuario=None,imagen_usuario=None, id_usuario=None):
         self.name = nombres_usuario
         self.lastname = apellidos_usuario
         self.email = correo_usuario
@@ -17,3 +17,6 @@ class Usuarios():
             'img': self.img,
             'id': self.id,
         }
+        
+    def __str__(self):
+        return str(self.__class__) + ": " + str(self.__dict__)
