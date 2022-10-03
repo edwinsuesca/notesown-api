@@ -1,5 +1,6 @@
 from database.db import get_connection
 from .entities.entiNotas import Notas
+from datetime import datetime
 
 class NotasModel():
     #Buscar todos
@@ -10,7 +11,7 @@ class NotasModel():
             notas=[]
 
             with connection.cursor() as cursor:
-                cursor.execute("SELECT  nombre_nota, fk_id_carpeta, id_nota, fecha_creacion_nota, fecha_edicion_nota, descripcion_nota, ultimo_editor_nota,  panel_nota FROM notas ORDER BY id_nota")
+                cursor.execute("SELECT  nombre_nota, descripcion_nota, fk_id_carpeta,  fecha_creacion_nota, fecha_edicion_nota,  ultimo_editor_nota, panel_nota ,id_nota FROM notas ORDER BY id_nota")
                 resultset=cursor.fetchall()
 
                 for row in resultset:
@@ -29,7 +30,7 @@ class NotasModel():
             connection = get_connection()
 
             with connection.cursor() as cursor:
-                cursor.execute("SELECT nombre_nota, fk_id_carpeta, id_nota, fecha_creacion_nota, fecha_edicion_nota, descripcion_nota, ultimo_editor_nota,  panel_nota FROM notas WHERE id_nota = %s",(id))
+                cursor.execute("SELECT nombre_nota, descripcion_nota, fk_id_carpeta, fecha_creacion_nota, fecha_edicion_nota,  ultimo_editor_nota, panel_nota, id_nota FROM notas WHERE id_nota = %s",(id))
                 row = cursor.fetchone()
 
                 nota = None
@@ -47,9 +48,9 @@ class NotasModel():
     def add_nota(self, nota):
         try:
             connection = get_connection()
-    
+
             with connection.cursor() as cursor:
-                cursor.execute("""INSERT INTO notas (nombre_nota, fk_id_carpeta, descripcion_nota ) VALUES (%s, %s,%s)""", (nota.name,nota.parentFolder, nota.description))
+                cursor.execute("INSERT INTO notas (nombre_nota, fk_id_carpeta, descripcion_nota, ultimo_editor_nota) VALUES (%s, %s, %s, %s)", (nota[0], nota[1], nota[2], nota[3]))
                 
                 affected_rows  = cursor.rowcount
                 connection.commit()
@@ -66,11 +67,28 @@ class NotasModel():
             connection = get_connection()
 
             with connection.cursor() as cursor:
-                cursor.execute("UPDATE notas SET nombre_nota = %s, fk_id_carpeta = %s, fecha_creacion_nota = %s, fecha_edicion_nota = %s, descripcion_nota = %s, ultimo_editor_nota = %s ,  panel_nota = %s WHERE id_nota = %s",(nota.name, nota.parentFolder, nota.creationDate, nota.updateDate,  nota.description,  nota.lastEditor,   nota.panel, nota.id))
+                cursor.execute("UPDATE notas SET nombre_nota = %s, fk_id_carpeta = %s, fecha_edicion_nota = %s, descripcion_nota = %s, ultimo_editor_nota = %s ,  panel_nota = %s WHERE id_nota = %s", (nota[0], nota[1], datetime.now() ,  nota[2],  nota[3], nota[4], nota[5]))
                 
                 affected_rows  = cursor.rowcount
                 connection.commit()
       
+            connection.close()
+            return affected_rows
+        except Exception as ex:
+            raise Exception(ex)
+    
+    #Eliminar
+    @classmethod
+    def delete_nota(self, id):
+        try:
+            connection = get_connection()
+            print(id)
+            with connection.cursor() as cursor:
+                cursor.execute("DELETE FROM notas WHERE id_nota = %s", [id])
+                
+                affected_rows  = cursor.rowcount
+                connection.commit()
+
             connection.close()
             return affected_rows
         except Exception as ex:

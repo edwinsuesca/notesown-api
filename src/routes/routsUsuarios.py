@@ -43,7 +43,7 @@ def add_usuario():
         affected_rows = UsuariosModel.add_usuario(usuario)
 
         if affected_rows == 1:
-            return jsonify(usuario.id)
+            return jsonify('message' f'Usuario "{name}" creada.')
         else:
             return jsonify({'message': "Error on insert"}), 500
         
@@ -64,9 +64,9 @@ def update_usuario(id):
         affected_rows = UsuariosModel.update_usuario(usuario)
 
         if affected_rows == 1:
-            return jsonify(id)
+            return jsonify('message' f' Usuario "{name}" actualizado.')
         else:
-            return jsonify({'message': "No user updated"}), 500
+            return jsonify({'message': "No user updated"}), 404
         
     except Exception as ex:
         return jsonify({'message': str(ex)}),500 
@@ -80,7 +80,7 @@ def delete_usuario(id):
         affected_rows = UsuariosModel.delete_usuario(id)
 
         if affected_rows == 1:
-            return jsonify(usuario.id)
+            return jsonify('message' f'Usuario con "{id}" eliminado.')
         else:
             return jsonify({'message': "No user delete"}), 404
         

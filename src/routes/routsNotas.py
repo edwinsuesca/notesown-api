@@ -32,16 +32,16 @@ def get_nota(id):
 @main.route('/add', methods = ['POST'])
 def add_nota():
     try:
-        description = request.json['description']
         name = request.json['name']
+        description = request.json['description']
         parentFolder = request.json['parentFolder']
+        lastEditor = request.json['lastEditor']
 
-        nota = Notas(description,name,parentFolder)
-
+        nota = [name, parentFolder, description, lastEditor]
         affected_rows = NotasModel.add_nota(nota)
 
         if affected_rows == 1:
-            return jsonify('message' f'Nota "{nota.name}" creada.')
+            return jsonify('message' f'Nota "{name}" creada.')
         else:
             return jsonify({'message': "Error on insert"}), 500
         
@@ -52,24 +52,36 @@ def add_nota():
 @main.route('/update/<id>', methods = ['PUT'])
 def update_nota(id):
     try:
-        id = request.json['id']
+        
         name = request.json['name']
-        creationDate = request.json['creationDate']
-        updateDate = request.json['updateDate']
+        parentFolder = request.json['parentFolder']
         description = request.json['description']
         lastEditor = request.json['lastEditor']
-        parentFolder = request.json['parentFolder']
         panel = request.json['panel']
 
 
-        nota = Notas(id,name,creationDate,updateDate,panel,description,lastEditor,parentFolder)
+        nota =[name, parentFolder, description, lastEditor, panel, id]
 
         affected_rows = NotasModel.update_nota(nota)
 
         if affected_rows == 1:
-            return jsonify(nota.id)
+            return jsonify(f'Nota con ID {id} actualizada satisfactoriamente.')
         else:
             return jsonify({'message': "No note updated"}), 500
+        
+    except Exception as ex:
+        return jsonify({'message': str(ex)}),500 
+
+#Eliminar
+@main.route('/delete/<id>', methods = ['DELETE'])
+def delete_nota(id):
+    try:
+        affected_rows = NotasModel.delete_nota(id)
+
+        if affected_rows == 1:
+            return jsonify( f'Nota con ID {id} borrada satisfactoriamente.')
+        else:
+            return jsonify({'message': "No folder delete"}), 404
         
     except Exception as ex:
         return jsonify({'message': str(ex)}),500 

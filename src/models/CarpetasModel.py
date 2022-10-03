@@ -1,6 +1,6 @@
 from database.db import get_connection
 from .entities.entiCarpetas import Carpetas
-from datetime import date
+from datetime import datetime
 
 class CarpetasModel():
     #Buscar todos
@@ -30,7 +30,7 @@ class CarpetasModel():
             connection = get_connection()
 
             with connection.cursor() as cursor:
-                cursor.execute("SELECT nombre_carpeta, fecha_creacion_carpeta, fecha_edicion_carpeta, panel_carpeta, id_carpeta FROM carpetas WHERE id_carpeta = %s",(id))
+                cursor.execute("SELECT nombre_carpeta, fecha_creacion_carpeta, fecha_edicion_carpeta, panel_carpeta, id_carpeta FROM carpetas WHERE id_carpeta = %s",[id])
                 row = cursor.fetchone()
 
                 carpeta = None
@@ -68,7 +68,7 @@ class CarpetasModel():
             connection = get_connection()
 
             with connection.cursor() as cursor:
-                cursor.execute("UPDATE carpetas SET nombre_carpeta = %s, fecha_edicion_carpeta = %s, panel_carpeta = %s WHERE id_carpeta = %s",(carpeta[0], date.today() , carpeta[1], carpeta[2]))
+                cursor.execute("UPDATE carpetas SET nombre_carpeta = %s, fecha_edicion_carpeta = %s, panel_carpeta = %s WHERE id_carpeta = %s",(carpeta[0], datetime.now() , carpeta[1], carpeta[2]))
                 
                 affected_rows  = cursor.rowcount
                 connection.commit()

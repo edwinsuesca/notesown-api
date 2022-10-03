@@ -57,7 +57,7 @@ def update_carpeta(id):
         affected_rows = CarpetasModel.update_carpeta(carpeta)
 
         if affected_rows == 1:
-            return jsonify(id)
+            return jsonify('message' f' Carpeta "{name}" actualizada.')
         else:
             return jsonify({'message': "No folder updated"}), 500
         
