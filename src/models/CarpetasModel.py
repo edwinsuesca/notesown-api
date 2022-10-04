@@ -1,5 +1,6 @@
 from database.db import get_connection
 from .entities.entiCarpetas import Carpetas
+from .entities.entiNotas import Notas
 from datetime import datetime
 
 class CarpetasModel():
@@ -83,7 +84,6 @@ class CarpetasModel():
     def delete_carpeta(self, id):
         try:
             connection = get_connection()
-            print(id)
             with connection.cursor() as cursor:
                 cursor.execute("DELETE FROM carpetas WHERE id_carpeta = %s", [id])
                 
@@ -92,5 +92,33 @@ class CarpetasModel():
 
             connection.close()
             return affected_rows
+        except Exception as ex:
+            raise Exception(ex)
+
+    #Traer carpetas por panel
+    @classmethod
+    def getFoldersByIdPanel(selft, panel):
+        try:
+            connection=get_connection()
+            carpetas=[]
+
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT nombre_carpeta, fecha_creacion_carpeta, fecha_edicion_carpeta, panel_carpeta, id_carpeta FROM carpetas WHERE panel_carpeta = %s",[panel])
+                resultset=cursor.fetchall()
+
+                for row in resultset:
+                    notas=[]
+                    cursor.execute("SELECT  nombre_nota, descripcion_nota, fk_id_carpeta,  fecha_creacion_nota, fecha_edicion_nota,  ultimo_editor_nota, panel_nota ,id_nota FROM notas WHERE fk_id_carpeta = %s",[row[4]])
+                    resultsetNotes=cursor.fetchall()
+                    print(row[4])
+                    for rowNote in resultsetNotes:
+                        nota  = Notas(rowNote[0],rowNote[1],rowNote[2],rowNote[3],rowNote[4],rowNote[5],rowNote[6],rowNote[7])
+                        notas.append(nota.to_JSON())
+                    
+                    carpeta  = Carpetas(row[0],row[1],row[2],row[3],row[4])
+                    carpetas.append({"folder": carpeta.to_JSON(), "notes": notas})
+
+            connection.close()
+            return carpetas
         except Exception as ex:
             raise Exception(ex)

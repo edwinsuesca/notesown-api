@@ -76,4 +76,13 @@ def delete_carpeta(id):
             return jsonify({'message': "No folder delete"}), 404
         
     except Exception as ex:
-        return jsonify({'message': str(ex)}),500 
+        return jsonify({'message': str(ex)}),500
+
+#Traer carpetas por panel
+@main.route('/getAllByIdPanel/<panel>') 
+def getFoldersByIdPanel(panel):
+    try:
+        carpetas = CarpetasModel.getFoldersByIdPanel(panel)
+        return jsonify(carpetas)
+    except Exception as ex:
+        return jsonify({'message': str(ex)}),500
