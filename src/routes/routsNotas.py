@@ -84,4 +84,18 @@ def delete_nota(id):
             return jsonify({'message': "No folder delete"}), 404
         
     except Exception as ex:
-        return jsonify({'message': str(ex)}),500 
+        return jsonify({'message': str(ex)}),500
+
+#Buscar en contenido de notas
+@main.route('/search', methods = ['POST'])
+def getNoteBySearch():
+    try:
+        content = request.json['content']
+        print(content)
+        nota = NotasModel.getNoteBySearch(content)
+        if nota != None:
+            return jsonify(nota)
+        else:
+            return jsonify({}), 404
+    except Exception as ex:
+        return jsonify({'message': str(ex)}),500
