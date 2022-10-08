@@ -43,7 +43,7 @@ class UsuariosModel():
             return usuarios
         except Exception as ex:
             raise Exception(ex)
-    #Buscar uno
+    #Buscar usuario por ID
     @classmethod
     def get_usuario(self,id):
         try:
@@ -62,6 +62,28 @@ class UsuariosModel():
             return usuario
         except Exception as ex:
             raise Exception(ex)
+
+    #Buscar usuario por ID
+    @classmethod
+    def getUserByEmail(self,email):
+        try:
+            connection = get_connection()
+
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT nombres_usuario, apellidos_usuario, correo_usuario, clave_usuario, imagen_usuario, id_usuario FROM usuarios WHERE correo_usuario = %s", [email])
+                #nombres_usuario=None, apellidos_usuario=None,correo_usuario=None,clave_usuario=None,imagen_usuario=None, id_usuario=None
+                row = cursor.fetchone()
+
+                usuario = None
+                if row != None:
+                        usuario = Usuarios(row[0],row[1],row[2],"",row[4],row[5])
+                        usuario = usuario.to_JSON()
+                    
+            connection.close()
+            return usuario
+        except Exception as ex:
+            raise Exception(ex)
+
     # Añadir 
     @classmethod
     def add_usuario(self,usuario):

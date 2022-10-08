@@ -49,11 +49,24 @@ class CarpetasModel():
     def add_carpeta(self, carpeta):
         try:
             connection = get_connection()
-            print("Insertadas: " + carpeta.name)
-            print(carpeta.panel)
             with connection.cursor() as cursor:
-                cursor.execute("INSERT INTO carpetas (nombre_carpeta, panel_carpeta) VALUES (%s, %s)", (carpeta.name, 0))
+                cursor.execute("INSERT INTO carpetas (id_carpeta, nombre_carpeta, panel_carpeta) VALUES (DEFAULT, %s, %s) RETURNING id_carpeta", (carpeta.name, 0))
+                response = [cursor.rowcount, cursor.fetchone()[0]]
+                affected_rows  = cursor.rowcount
+                connection.commit()
                 
+            connection.close()
+            return response
+        except Exception as ex:
+            raise Exception(ex)
+
+    #Asignar editor a la nota
+    @classmethod
+    def asignEditor(self, id_carpeta, id_editor, id_rol):
+        try:
+            connection = get_connection()
+            with connection.cursor() as cursor:
+                cursor.execute("INSERT INTO usuarios_carpetas (fk_id_usuario, fk_id_carpeta, fk_id_rol) VALUES (%s, %s, %s)", [id_editor, id_carpeta, id_rol])
                 affected_rows  = cursor.rowcount
                 connection.commit()
                 
@@ -61,7 +74,7 @@ class CarpetasModel():
             return affected_rows
         except Exception as ex:
             raise Exception(ex)
-   
+
  # Actualizar
     @classmethod
     def update_carpeta(self, carpeta):
@@ -81,7 +94,7 @@ class CarpetasModel():
 
     #Eliminar
     @classmethod
-    def delete_carpeta(self, id):
+    def delete_carpeta(self, id_owner, id_folder):
         try:
             connection = get_connection()
             with connection.cursor() as cursor:
@@ -97,13 +110,13 @@ class CarpetasModel():
 
     #Traer carpetas por panel
     @classmethod
-    def getFoldersByIdPanel(selft, panel):
+    def getFoldersByIdPanel(selft, id_owner, panel):
         try:
             connection=get_connection()
             carpetas=[]
 
             with connection.cursor() as cursor:
-                cursor.execute("SELECT nombre_carpeta, fecha_creacion_carpeta, fecha_edicion_carpeta, panel_carpeta, id_carpeta FROM carpetas WHERE panel_carpeta = %s",[panel])
+                cursor.execute("SELECT nombre_carpeta, fecha_creacion_carpeta, fecha_edicion_carpeta, panel_carpeta, id_carpeta FROM carpetas INNER JOIN usuarios_carpetas ON id_carpeta = fk_id_carpeta INNER JOIN usuarios ON id_usuario = fk_id_usuario WHERE fk_id_usuario = %s AND panel_carpeta = %s",[id_owner, panel])
                 resultset=cursor.fetchall()
 
                 for row in resultset:

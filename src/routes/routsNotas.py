@@ -90,12 +90,36 @@ def delete_nota(id):
 @main.route('/search', methods = ['POST'])
 def getNoteBySearch():
     try:
-        content = request.json['content']
-        print(content)
-        nota = NotasModel.getNoteBySearch(content)
+        data = request.get_json()
+        notes = NotasModel.getNoteBySearch(data)
+        if notes != None:
+            return jsonify(notes)
+        else:
+            return jsonify({}), 404
+    except Exception as ex:
+        return jsonify({'message': str(ex)}),500
+
+#Buscar notas por usuario
+@main.route('/notesUser/<id>')
+def get_nota_usuario(id):
+    try:
+        notas = NotasModel.get_nota_usuario(id)
+        if notas != None:
+            return jsonify(notas)
+        else:
+            return jsonify({}), 404
+
+    except Exception as ex:
+        return jsonify({'message': str(ex)}),500
+
+
+""" @main.route('/<id>')
+def get_nota(id):
+    try:
+        nota = NotasModel.get_nota(id)
         if nota != None:
             return jsonify(nota)
         else:
             return jsonify({}), 404
     except Exception as ex:
-        return jsonify({'message': str(ex)}),500
+        return jsonify({'message': str(ex)}),500 """

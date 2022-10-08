@@ -33,11 +33,23 @@ def get_usuarios():
     except Exception as ex:
         return jsonify({'message': str(ex)}),500
 
-#Buscar uno
-@main.route('/<id>')
+#Buscar usuario por ID
+@main.route('getUserByID/<id>')
 def get_usuario(id):
     try:
         usuario = UsuariosModel.get_usuario(id)
+        if usuario != None:
+            return jsonify(usuario)
+        else:
+            return jsonify({}), 404
+    except Exception as ex:
+        return jsonify({'message': str(ex)}),500
+
+#Buscar usuario por Email
+@main.route('getUserByEmail/<email>')
+def getUserByEmail(email):
+    try:
+        usuario = UsuariosModel.getUserByEmail(email)
         if usuario != None:
             return jsonify(usuario)
         else:
