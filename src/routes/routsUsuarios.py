@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from werkzeug.security import check_password_hash, generate_password_hash
 from flask_cors import cross_origin
 from utils.token import writeToken
 # Entities
@@ -64,15 +65,19 @@ def add_usuario():
         name = request.json['name']
         lastname = request.json['lastname']
         email = request.json['email']
-        passw = request.json['passw']
+        password = request.json['password']
         img = request.json['img']
+
+        if len(password) < 8:
+            return jsonify({'error': "La contraseña debe contener mínimo 8 caracteres."})
         
-        usuario = Usuarios(name,lastname,email,passw,img)
+        pwd_hash = generate_password_hash(password)
+        usuario = Usuarios(name,lastname,email,pwd_hash,img)
 
         affected_rows = UsuariosModel.add_usuario(usuario)
 
         if affected_rows == 1:
-            return jsonify('message' f'Usuario "{name}" creada.')
+            return jsonify({'message' f'Usuario {name} creado.'}), 200
         else:
             return jsonify({'message': "Error on insert"}), 500
         
